@@ -2,7 +2,9 @@
  * CollabForge — Client API Service Layer
  */
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000'
+  : 'https://collabforge-o7db.onrender.com';
 
 export const apiClient = {
   // 1. Fetch Active Squads
