@@ -243,5 +243,17 @@ export const apiClient = {
       console.error('[API Error - getUserProfile]:', err);
       throw err;
     }
+  },
+
+  // 15. Retrieve Squad Roster / Member Telemetry
+  async getSquadRoster(squadId) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/squads/${squadId}/roster`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to load squad telemetry`);
+      return await res.json();
+    } catch (err) {
+      console.error('[API Error - getSquadRoster]:', err);
+      throw err;
+    }
   }
 };

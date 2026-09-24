@@ -12,7 +12,7 @@ import {
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Ensure Firebase is initialized 
+// Firebase Initialization
 const firebaseConfig = {
   apiKey: "AIzaSyAGuTfavc-ibPGMkKohDovt0bemubnP1L8",
   authDomain: "collabforge-aaf25.firebaseapp.com",
