@@ -233,7 +233,7 @@ export const apiClient = {
     }
   },
 
-  // 14. Public Operative Dossier Profile Fetch
+  /// 14. Public Operative Dossier Profile Fetch
   async getUserProfile(userId) {
     try {
       const res = await fetch(`${API_BASE_URL}/users/${userId}`);
