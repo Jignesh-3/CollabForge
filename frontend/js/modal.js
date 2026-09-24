@@ -145,25 +145,30 @@ window.openSquadRoster = async function openSquadRoster(squadId) {
   }
 
 // 1. Kick Member Listener (Leader Action: /roles/{role_index}/vacate)
-  rosterMembersListEl.querySelectorAll('.btn-kick-member').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const squadId = btn.getAttribute('data-squad-id');
-      const roleIndex = btn.getAttribute('data-role-index');
+rosterMembersListEl.querySelectorAll('.btn-kick-member').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const squadId = btn.getAttribute('data-squad-id');
+    const roleIndex = btn.getAttribute('data-role-index');
 
-      if (!confirm("Are you sure you want to remove this operative from the squad?")) return;
+    if (!confirm("Are you sure you want to remove this operative from the squad?")) return;
 
-      btn.disabled = true;
-      btn.textContent = "Removing...";
+    btn.disabled = true;
+    btn.textContent = "Removing...";
 
-      try {
-        const token = await window.auth.currentUser.getIdToken();
-        const res = await fetch(`http://localhost:8000/api/squads/${squadId}/roles/${roleIndex}/vacate`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+    try {
+      const token = await window.auth.currentUser.getIdToken();
+      
+      const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8000/api'
+        : 'https://collabforge-o7db.onrender.com/api';
+
+      const res = await fetch(`${API_BASE_URL}/squads/${squadId}/roles/${roleIndex}/vacate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to vacate role`);
 
@@ -179,25 +184,30 @@ window.openSquadRoster = async function openSquadRoster(squadId) {
   });
 
   // 2. Leave Squad Listener (Member Action: /leave-role/{role_index})
-  rosterMembersListEl.querySelectorAll('.btn-leave-squad').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const squadId = btn.getAttribute('data-squad-id');
-      const roleIndex = btn.getAttribute('data-role-index');
+rosterMembersListEl.querySelectorAll('.btn-leave-squad').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const squadId = btn.getAttribute('data-squad-id');
+    const roleIndex = btn.getAttribute('data-role-index');
 
-      if (!confirm("Are you sure you want to leave this squad?")) return;
+    if (!confirm("Are you sure you want to leave this squad?")) return;
 
-      btn.disabled = true;
-      btn.textContent = "Leaving...";
+    btn.disabled = true;
+    btn.textContent = "Leaving...";
 
-      try {
-        const token = await window.auth.currentUser.getIdToken();
-        const res = await fetch(`http://localhost:8000/api/squads/${squadId}/leave-role/${roleIndex}`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+    try {
+      const token = await window.auth.currentUser.getIdToken();
+
+      const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8000/api'
+        : 'https://collabforge-o7db.onrender.com/api';
+
+      const res = await fetch(`${API_BASE_URL}/squads/${squadId}/leave-role/${roleIndex}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to leave squad`);
 
@@ -365,23 +375,28 @@ function renderRosterList(data) {
   }
 
   // 3. Event Listeners for Kick & Leave buttons
-  rosterMembersListEl.querySelectorAll('.btn-kick-member').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const squadId = btn.getAttribute('data-squad-id');
-      const roleIndex = btn.getAttribute('data-role-index');
+rosterMembersListEl.querySelectorAll('.btn-kick-member').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const squadId = btn.getAttribute('data-squad-id');
+    const roleIndex = btn.getAttribute('data-role-index');
 
-      if (!confirm("Are you sure you want to remove this operative from the squad?")) return;
+    if (!confirm("Are you sure you want to remove this operative from the squad?")) return;
 
-      btn.disabled = true;
-      btn.textContent = "...";
+    btn.disabled = true;
+    btn.textContent = "...";
 
-      try {
-        const token = await window.auth.currentUser.getIdToken();
-        const res = await fetch(`http://localhost:8000/api/squads/${squadId}/roles/${roleIndex}/vacate`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+    try {
+      const token = await window.auth.currentUser.getIdToken();
+
+      const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8000/api'
+        : 'https://collabforge-o7db.onrender.com/api';
+
+      const res = await fetch(`${API_BASE_URL}/squads/${squadId}/roles/${roleIndex}/vacate`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         window.openSquadRoster(squadId);
@@ -494,7 +509,7 @@ window.openOperativeDossier = async function (uid) {
   }
 };
 
-// Dosseir Profile fetch
+// Dossier Profile fetch
 window.openOperativeDossier = async function (userId) {
   const modal = document.getElementById("public-dossier-modal");
   const nameEl = document.getElementById("dossier-public-name");
@@ -520,16 +535,13 @@ window.openOperativeDossier = async function (userId) {
   if (badgesContainer) badgesContainer.innerHTML = "";
 
   try {
-    // 2. Fetch using your existing GET /api/users/{user_id}
-    const res = await fetch(`http://localhost:8000/api/users/${userId}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}: Operative not found`);
-
-    const data = await res.json();
+    // 2. Fetch via apiClient (already handles status check and JSON parsing)
+    const data = await apiClient.getUserProfile(userId);
 
     // 3. Populate Fields
     if (nameEl) {
       nameEl.textContent = data.display_name || data.name || data.handle || "Anonymous Operative";
-      nameEl.classList.add("hackathon-wave");
+      nameEl.classList.remove("hackathon-wave");
     }
 
     if (bioEl) {
@@ -550,8 +562,8 @@ window.openOperativeDossier = async function (userId) {
       githubLink.style.display = data.github_url ? "inline-flex" : "none";
     }
     if (portfolioLink) {
-      portfolioLink.href = data.portfolio_url || "#";
-      portfolioLink.style.display = data.portfolio_url ? "inline-flex" : "none";
+      portfolioLink.href = data.portfolio_url || data.linkedin_url || "#";
+      portfolioLink.style.display = (data.portfolio_url || data.linkedin_url) ? "inline-flex" : "none";
     }
 
     // Badges / Achievements
@@ -573,6 +585,7 @@ window.openOperativeDossier = async function (userId) {
     if (bioEl) bioEl.textContent = `Could not retrieve profile: ${err.message}`;
   }
 };
+
 document.addEventListener("click", (e) => {
   const rosterModal = document.getElementById("roster-modal");
   const dossierModal = document.getElementById("public-dossier-modal");
