@@ -3,8 +3,8 @@
  */
 
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:8000'
-  : 'https://collabforge-o7db.onrender.com';
+  ? 'http://localhost:8000/api'
+  : 'https://collabforge-o7db.onrender.com/api';
 
 export const apiClient = {
   // 1. Fetch Active Squads
