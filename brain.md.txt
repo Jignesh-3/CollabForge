@@ -1,0 +1,87 @@
+# brain.md — Project Blueprint: CollabForge
+
+> **Mission:** Eliminate the "solo builder penalty" by pairing independent developers, designers, and creators into high-velocity hackathon and side-project squads through structured capability slots, live event countdowns, and complementary skill matching.
+
+---
+
+## 1. Product Vision & Problem Space
+
+### The Core Frustrations
+1. **The Hackathon Drop-Out Rate:** Capable backend engineers and UI designers skip major hackathons (Devpost, ETHGlobal, HackIndia, MLH) because they lack a balanced squad before registration cutoffs.
+2. **Discord / Slack Noise:** Existing matchmaking relies on unstructured channels where portfolios get buried under chat spam.
+3. **Asymmetric Commitment:** Solo devs group up casually, only for teammates to disappear due to lack of verified skills or clear role boundaries.
+
+### The CollabForge Solution
+* **Slot-Based Squad Architecture:** Teams are structured systems with fixed, unfilled capability slots (e.g., `1/1 Lead Backend`, `0/1 Frontend/WebGL`, `0/1 Product Designer`).
+* **Live Hackathon Radar:** Direct synchronization with upcoming global and local hackathons, featuring registration countdowns and event-targeted squads.
+* **Match Score Engine:** Automatic calculation pairing users to squads where their verified skills fill open gaps.
+
+---
+
+## 2. Information Architecture & Page Hierarchy
+
+CollabForge Web Application
+│
+├── / (Landing Page)
+│   ├── Hero Section (Dynamic squad ticker + active hackathon countdowns)
+│   ├── "Live Vacancies" (Interactive preview with open slots)
+│   └── How It Works (Create Squad → Fill Gaps → Ship MVP)
+│
+├── /squads (Squad Explorer)
+│   ├── Filter Bar: Hackathon, Role Type, Primary Tech Stack
+│   ├── "Recommended For You" (Skill-intersection ranking)
+│   └── Squad Card Grid (Visual slot indicators: Filled vs. Open)
+│
+├── /squads/new (Create a Squad)
+│   └── Step form: Pitch, Hackathon Target, Max Size, Slot Definitions
+│
+├── /squads/:id (Squad Detail & Application Drawer)
+│   ├── Full problem statement & architecture plan
+│   ├── Current squad roster (linked builder profiles)
+│   └── "Claim Slot" Application Modal (Note + GitHub/Portfolio link)
+│
+├── /radar (Hackathon Radar)
+│   ├── Timeline cards of active/upcoming hackathons
+│   └── Quick-filter: "View squads building for this event"
+│
+├── /workspace/:squad_id (Private Squad Hub - Accepted Members Only)
+│   ├── Central links (GitHub Repo, Figma file, Discord/WhatsApp group)
+│   └── MVP Milestone Checklist (T-minus countdown, Core Features)
+│
+└── /profile/:username (Builder Passport)
+├── Primary tech stack & proficiency tags
+└── External links (GitHub, Portfolio, LinkedIn)
+
+
+---
+
+## 3. Visual Identity & Design Tokens (Crimson Obsidian Palette)
+
+Built on the **60-30-10 rule** (60% Pitch Black, 30% Crisp White/Zinc, 10% Crimson Red accents).
+
+| Token Name | Hex Code | Tailwind Equivalent | Purpose & Layer |
+| :--- | :--- | :--- | :--- |
+| **Canvas Background** | `#050507` | `bg-[#050507]` | Deepest viewport canvas |
+| **Surface Card** | `#0e0e12` | `bg-[#0e0e12]` | Squad cards, dialogs, sidebars |
+| **Surface Hover** | `#14141a` | `bg-[#14141a]` | Interactive card hover states |
+| **Text Primary** | `#ffffff` | `text-white` | Hero titles, squad names, key values |
+| **Text Secondary** | `#a1a1aa` | `text-zinc-400` | Pitches, descriptions, role names |
+| **Accent Crimson** | `#dc2626` | `bg-red-600` / `text-red-600` | Primary buttons, active tabs |
+| **Accent Glow** | `#ef4444` | `shadow-red-600/30` | Hover outlines, active indicators |
+| **Open Role Slot** | `rgba(220,38,38,0.1)` | `border-dashed border-red-500/60` | Clickable vacancy slots |
+| **Filled Role Slot** | `rgba(24,24,27,0.8)` | `border border-zinc-800 bg-zinc-900` | Confirmed team members |
+
+---
+
+## 4. Typography Hierarchy
+
+* **Primary Sans (UI & Headings):** `Inter` (Weights: 400 Regular, 600 SemiBold, 700 Bold). Used for brand titles, navigation, descriptions, and user pitches.
+* **Technical Monospace (Data & Tags):** `JetBrains Mono` (Weights: 400 Regular, 500 Medium). Used for tech stack badges, role slots (`[0/1 FRONTEND]`), timestamps, and countdown timers. Always styled uppercase with wide letter-spacing (`tracking-wider`).
+
+---
+
+## 5. Technical Stack & Architecture
+
+* **Frontend:** HTML5, Tailwind CSS, Vanilla JavaScript (lightweight, zero unnecessary GPU animation bloat).
+* **Backend:** FastAPI (Python 3.11+) with async SQLAlchemy ORM.
+* **Database:** PostgreSQL (normalized schema handling users, profiles, hackathons, squads, roles, and jo)

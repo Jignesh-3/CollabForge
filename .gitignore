@@ -1,0 +1,29 @@
+# Environment & Secrets
+.env
+.env.*
+*.env
+!.env.example
+token.txt
+generate_token.py
+
+# Service Accounts & Private Keys
+firebase_credentials.json
+firebase-credentials.json
+serviceAccountKey.json
+*firebase-adminsdk*.json
+*.pem
+*.key
+
+# Python / Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# IDE & OS Metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

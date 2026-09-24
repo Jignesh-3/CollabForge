@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CollabForge — Hackathon Squad Architecture</title>
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Modular CSS Hierarchy -->
+  <link rel="stylesheet" href="styles/variables.css" />
+  <link rel="stylesheet" href="styles/loader.css" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/auth.css" />
+</head>
+<body>
+
+  <!-- ATMOSPHERIC BACKGROUND ELEMENTS -->
+  <div class="horizon-glow"></div>
+  <div class="bg-grid-overlay"></div>
+  <div id="ambient-glow" class="ambient-glow"></div>
+
+  <!-- 1. FULLSCREEN ANVIL PULSE LOADER -->
+  <div id="loader-overlay" class="loader-overlay">
+    <div class="anvil-wrapper">
+      <div class="brand-mark">COLLAB<span>FORGE</span></div>
+      <div class="pulse-track">
+        <div class="pulse-line"></div>
+      </div>
+      <div class="status-text">INITIALIZING ENGINE</div>
+    </div>
+  </div>
+
+  <!-- 2. STICKY HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo-container">
+        <!-- Upgraded Anvil Brand Identity -->
+        <a href="#" class="brand-identity">
+          <div class="brand-glyph">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 5H21L18 10H6L3 5Z" fill="#FFFFFF" />
+              <path d="M8 10L10 19H14L16 10H8Z" fill="#E50914" />
+              <rect x="11" y="12" width="2" height="4" fill="#FFFFFF" opacity="0.9" />
+            </svg>
+          </div>
+
+          <div class="brand-text-group">
+            <span class="brand-collab">COLLAB</span>
+            <span class="brand-slash">/</span>
+            <span class="brand-forge">FORGE</span>
+            <span class="brand-build-tag">BETA</span>
+          </div>
+        </a>
+
+        <!-- Socials -->
+        <div class="social-links">
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub Profile">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="LinkedIn Profile">
+            <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Guest Controls -->
+      <div id="guest-controls" class="auth-guest-controls">
+        <button id="btn-header-signin" class="btn btn-signin-pulsing">Sign In</button>
+        <button id="btn-header-create" class="btn btn-crimson">+ Create Squad</button>
+      </div>
+      <!-- Authenticated Controls -->
+      <div id="user-controls" class="auth-user-controls" style="display: none;">
+        <button id="btn-user-create" class="btn btn-crimson">+ Create Squad</button>
+
+        <div class="profile-menu-container">
+          <button id="profile-trigger" class="profile-trigger-btn" aria-haspopup="true" aria-expanded="false">
+            <div class="avatar-frame">
+              <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="avatar-image" />
+              <div class="status-pip"></div>
+            </div>
+            <span id="user-handle" class="profile-handle">dev_lead</span>
+            <svg class="dropdown-caret" viewBox="0 0 12 12">
+              <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" />
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div id="profile-dropdown" class="profile-dropdown-menu">
+            <div class="dropdown-meta-header">
+              <div id="dropdown-name" class="dropdown-meta-name">Lead Architect</div>
+              <div class="dropdown-meta-role">ACTIVE SESSION // VERIFIED</div>
+            </div>
+            <a href="#" id="menu-my-applications" class="dropdown-item">
+              <span>My Applications</span>
+              <span class="item-counter" id="counter-my-applications">--</span>
+            </a>
+            <a href="#" id="menu-my-squads" class="dropdown-item">
+              <span>My Squads</span>
+              <span class="item-counter" id="counter-my-squads">--</span>
+            </a>
+            <a href="#" id="menu-edit-portfolio" class="dropdown-item">
+              <span>Edit Portfolio Dossier</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <button id="btn-sign-out" class="dropdown-item danger">
+              <span>Disconnect Session</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- 3. MAIN PRODUCT CANVAS -->
+  <main>
+    <!-- HERO SECTION -->
+    <div class="hero-banner">
+      <span class="badge-engineering">MISSION ARCHITECTURE // RECRUITMENT</span>
+      
+      <h1 class="hero-title">
+        Forge elite squads for your next <span class="hackathon-wave">hackathon</span>.
+      </h1>
+
+      <p class="hero-subtext">Discover high-velocity builders, claim vacant engineering slots, and showcase visual project achievements without recruitment friction.</p>
+    </div>
+
+    <!-- METRICS TICKER -->
+    <div class="platform-stats">
+      <div class="stat-item">
+        <div class="stat-num"><span>48</span>H</div>
+        <div class="stat-label">Fastest Match</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num"><span>94</span>%</div>
+        <div class="stat-label">Squad Fill Rate</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num"><span>0</span>ms</div>
+        <div class="stat-label">Recruiter Noise</div>
+      </div>
+    </div>
+
+    <!-- NEW SECTION: PROTOCOL WORKFLOW -->
+    <section class="section-wrapper">
+      <span class="section-eyebrow">// EXECUTION PROTOCOL</span>
+      <h2 class="section-heading">How the Forge <span class="hackathon-wave">Operates</span></h2>
+      <p class="section-lead">A strict proof-over-promise architecture designed to assemble production-ready hackathon squads in under 48 hours.</p>
+
+      <div class="pipeline-grid">
+        <div class="pipeline-card">
+          <div class="pipeline-step-num">STEP 01</div>
+          <h3 class="pipeline-title">Deploy Vacant Slots</h3>
+          <p class="pipeline-desc">Squad leads define the stack, hackathon target, and exact missing technical roles rather than posting open, uncalibrated invites.</p>
+        </div>
+
+        <div class="pipeline-card">
+          <div class="pipeline-step-num">STEP 02</div>
+          <h3 class="pipeline-title">Pitch With Proof</h3>
+          <p class="pipeline-desc">Applicants target specific role vacancies, submitting concise 300-character elevator pitches anchored by verified GitHub or demo artifacts.</p>
+        </div>
+
+        <div class="pipeline-card">
+          <div class="pipeline-step-num">STEP 03</div>
+          <h3 class="pipeline-title">Lock the Roster</h3>
+          <p class="pipeline-desc">Review incoming applicant dossiers, approve or reject role claims instantly, and lock your engineering roster before deadline day.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW SECTION: BENTO FEATURE MATRIX -->
+    <section class="section-wrapper">
+      <span class="section-eyebrow">// SYSTEM CAPABILITIES</span>
+      <h2 class="section-heading">Built for Terminal <span class="hackathon-wave">Velocity</span></h2>
+      <p class="section-lead">Zero resume PDFs. Zero dead Discord channels. Purpose-built mechanics for competitive software hackers.</p>
+
+      <div class="bento-grid">
+        <!-- Feature 1: Slot Architecture -->
+        <div class="bento-card bento-span-7">
+          <div>
+            <div class="bento-tag">// PRECISION RECRUITMENT</div>
+            <h3 class="bento-title">Slot-Based Role Balancing</h3>
+            <p class="bento-desc">Eliminate squads with four frontend developers and zero backend engineers. Define granular skill quotas for ML, backend, and smart contract slots.</p>
+          </div>
+          <div class="bento-mockup">
+            <div class="bento-mockup-line">
+              <span>SLOT_01: FASTAPI / SYSTEM ARCHITECT</span>
+              <span class="bento-mockup-status">[VACANT]</span>
+            </div>
+            <div class="bento-mockup-line">
+              <span>SLOT_02: COMPUTER VISION / OPENCV</span>
+              <span style="color: var(--crimson-red);">[CLAIMED]</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 2: High Velocity Pipeline -->
+        <div class="bento-card bento-span-5">
+          <div>
+            <div class="bento-tag">// ZERO CORPORATE NOISE</div>
+            <h3 class="bento-title">Proof Over Resumes</h3>
+            <p class="bento-desc">300-character constrained pitch format linked straight to commit history, Docker containers, and live web deployments.</p>
+          </div>
+          <div class="bento-mockup">
+            <div class="bento-mockup-line">
+              <span>MAX_PITCH_LENGTH</span>
+              <span>300 CHARS</span>
+            </div>
+            <div class="bento-mockup-line">
+              <span>PROOF_TYPE</span>
+              <span>GITHUB_OR_LIVE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 3: Live Verification -->
+        <div class="bento-card bento-span-6">
+          <div>
+            <div class="bento-tag">// TELEMETRY & FEED</div>
+            <h3 class="bento-title">Real-Time Discovery Feed</h3>
+            <p class="bento-desc">Live vacant-only filters, hackathon categorization, and instant vacancy badges that update dynamically without page reloads.</p>
+          </div>
+        </div>
+
+        <!-- Feature 4: High Performance Stack -->
+        <div class="bento-card bento-span-6">
+          <div>
+            <div class="bento-tag">// ARCHITECTURE</div>
+            <h3 class="bento-title">FastAPI & Async Worker Core</h3>
+            <p class="bento-desc">Engineered on high-performance Python ASGI backend routines delivering sub-100ms API responses for instantaneous roster locking.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Onboarding / Empty State Telemetry Callout -->
+<div 
+  id="onboarding-highlighter-card" 
+  style="
+    display: none;
+    margin: 1.25rem 0;
+    padding: 1.15rem 1.4rem;
+    background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.14), rgba(18, 18, 21, 0.9) 70%);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    border-left: 4px solid #3b82f6;
+    border-radius: 8px;
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.15);
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  "
+>
+  <div style="display: flex; align-items: flex-start; gap: 0.9rem; max-width: 680px;">
+    <div style="
+      font-size: 1.25rem; 
+      line-height: 1; 
+      margin-top: 2px;
+      padding: 0.4rem;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 6px;
+      color: #60a5fa;
+    ">
+      ⚡
+    </div>
+
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+        <span style="font-family: monospace; font-size: 0.82rem; font-weight: 800; color: #fff; letter-spacing: 0.05em; text-transform: uppercase;">
+          // INITIALIZATION PROTOCOL REQUIRED
+        </span>
+        <span id="onboarding-callout-badge" style="
+          font-family: monospace;
+          font-size: 0.65rem;
+          padding: 0.15rem 0.45rem;
+          border-radius: 4px;
+          background: rgba(245, 158, 11, 0.15);
+          color: #fbbf24;
+          border: 1px solid rgba(245, 158, 11, 0.35);
+          text-transform: uppercase;
+        ">
+          ACTION PENDING
+        </span>
+      </div>
+
+      <p id="onboarding-callout-desc" style="
+        font-size: 0.8rem; 
+        color: #a1a1aa; 
+        margin: 0.35rem 0 0 0; 
+        line-height: 1.45;
+      ">
+        Your candidate dossier is incomplete. Calibrate your technical stack and portfolio links to increase squad recruitment match rate.
+      </p>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 0.65rem; margin-left: auto;">
+    <button 
+      type="button" 
+      id="btn-onboarding-action"
+      style="
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: 1px solid rgba(96, 165, 250, 0.5);
+        color: #ffffff;
+        font-family: monospace;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        padding: 0.5rem 1.1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        box-shadow: 0 0 15px rgba(37, 99, 235, 0.35);
+        transition: all 0.2s ease;
+      "
+      onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 0 20px rgba(59, 130, 246, 0.6)';"
+      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 15px rgba(37, 99, 235, 0.35)';"
+    >
+      <span id="btn-onboarding-action-text">EDIT DOSSIER</span>
+      <span>→</span>
+    </button>
+
+    <button 
+      type="button" 
+      id="btn-dismiss-onboarding"
+      style="
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #71717a;
+        font-family: monospace;
+        font-size: 0.75rem;
+        padding: 0.5rem 0.65rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      "
+      onmouseover="this.style.color='#f4f4f5'; this.style.borderColor='rgba(255, 255, 255, 0.25)';"
+      onmouseout="this.style.color='#71717a'; this.style.borderColor='rgba(255, 255, 255, 0.12)';"
+      title="Dismiss for this session"
+    >
+      ✕
+    </button>
+  </div>
+</div>
+
+    <!-- LIVE DISCOVERY FEED & SQUAD CARDS -->
+    <section class="section-wrapper" id="discovery-section">
+      <div class="feed-header">
+        <div>
+          <span class="section-eyebrow" style="margin-bottom: 0.25rem;">// ARENA BROADCAST</span>
+          <h2>Active Discovery <span class="hackathon-wave">Feed</span></h2>
+        </div>
+        <div class="feed-meta-tabs">
+          <button id="tab-filter-all" class="tab-pill active">All Squads (2)</button>
+          <button id="tab-filter-vacant" class="tab-pill">Vacant Only</button>
+        </div>
+      </div>
+
+      <div class="squad-grid">
+        
+      </div>
+    </section>
+  </main>
+
+  <!-- INDUSTRIAL FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand-col">
+        <div class="brand-identity">
+          <div class="brand-glyph">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 5H21L18 10H6L3 5Z" fill="#FFFFFF" />
+              <path d="M8 10L10 19H14L16 10H8Z" fill="#E50914" />
+              <rect x="11" y="12" width="2" height="4" fill="#FFFFFF" opacity="0.9" />
+            </svg>
+          </div>
+          <div class="brand-text-group">
+            <span class="brand-collab">COLLAB</span>
+            <span class="brand-slash">/</span>
+            <span class="brand-forge">FORGE</span>
+          </div>
+        </div>
+        <p class="footer-subtext">Engineered squad coordination platform for high-velocity hackathon builders, architects, and technical contributors.</p>
+        <div class="footer-telemetry">
+          <span class="telemetry-pip"></span>
+          <span>ALL PROTOCOLS OPERATIONAL // 2026</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-heading">Platform</div>
+        <ul class="footer-links">
+          <li><a href="#discovery-section">Discovery Arena</a></li>
+          <li><a href="#">Squad Architecture</a></li>
+          <li><a href="#">Proof Verification</a></li>
+          <li><a href="#">API Documentation</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-heading">Stack Specs</div>
+        <ul class="footer-links">
+          <li><a href="#">FastAPI ASGI Core</a></li>
+          <li><a href="#">PostgreSQL Relational</a></li>
+          <li><a href="#">Vanilla Architecture</a></li>
+          <li><a href="#">GitHub Repository</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>COLLABFORGE // ENGINEER-FIRST SQUAD COORDINATION</div>
+      <div>LATENCY: OPTIMAL // STATUS: VERIFIED</div>
+    </div>
+  </footer>
+
+  <!-- AUTH INTERCEPTOR MODAL -->
+  <div id="auth-modal" class="modal-backdrop">
+    <div class="auth-card">
+      <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+      <span class="auth-badge">// IDENTITY REQUIRED</span>
+      <h3 id="auth-gate-title" class="auth-title">Join the Arena</h3>
+      <p id="auth-gate-desc" class="auth-desc">Sign in or create an account to claim role slots, pitch yourself to squad leaders, and track hackathon achievements.</p>
+
+      <div class="auth-actions">
+        <button class="btn btn-auth-provider" id="btn-oauth-github">
+          Continue with GitHub
+        </button>
+        <button class="btn btn-auth-provider" id="btn-oauth-google">
+          Continue with Google
+        </button>
+      </div>
+
+      <div class="auth-card-footer">
+        PROTECTED BY COLLABFORGE IAM
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT PITCH & LEADER REVIEW MODAL -->
+  <div id="pitch-modal" class="modal-backdrop">
+    <div class="auth-card pitch-card">
+      <button id="pitch-modal-close" class="modal-close-btn">&times;</button>
+      
+      <div class="pitch-header-meta">
+        <span id="pitch-hackathon-badge" class="pitch-hackathon-tag">ETHINDIA 2026</span>
+      </div>
+      <h3 id="pitch-squad-title" class="auth-title" style="margin-bottom: 0.25rem;">Autonomous Agent Swarm</h3>
+      <p id="pitch-modal-desc" class="auth-desc" style="margin-bottom: 1rem;">
+        Claim a vacant slot by submitting a concise proof-of-work elevator pitch to the squad lead.
+      </p>
+
+      <!-- VIEW A: APPLICANT FORM (Shown to normal users) -->
+      <form id="pitch-form" class="pitch-form">
+        <div class="pitch-field-group">
+          <label class="pitch-label" for="pitch-role-select">Target Engineering Slot</label>
+          <select id="pitch-role-select" class="pitch-select" required>
+            <!-- Injected dynamically -->
+          </select>
+        </div>
+
+        <div class="pitch-field-group">
+          <label class="pitch-label" for="pitch-text">
+            <span>Elevator Pitch</span>
+            <span id="pitch-counter" class="char-counter">0 / 300</span>
+          </label>
+          <textarea 
+            id="pitch-text" 
+            class="pitch-textarea" 
+            maxlength="300" 
+            placeholder="Outline your relevant technical experience, repos, or how you will execute this hackathon role..." 
+            required
+          ></textarea>
+        </div>
+
+        <div class="pitch-field-group">
+          <label class="pitch-label" for="pitch-proof-url">Proof of Work (GitHub / Live Link)</label>
+          <input 
+            type="url" 
+            id="pitch-proof-url" 
+            class="pitch-input" 
+            placeholder="https://github.com/your-username/relevant-repo" 
+            required 
+          />
+        </div>
+
+        <label class="pitch-checkbox-label">
+          <input type="checkbox" id="pitch-attach-profile" class="pitch-checkbox" checked />
+          <span class="pitch-checkbox-text">Attach my verified CollabForge developer profile & skill metrics.</span>
+        </label>
+
+        <button type="submit" id="btn-submit-pitch" class="btn btn-crimson" style="width: 100%; justify-content: center; padding: 0.75rem;">
+          Transmit Pitch to Squad Lead
+        </button>
+      </form>
+
+      <!-- VIEW B: LEADER REVIEW PANEL (Shown only if squad.leader_id === currentUser.uid) -->
+      <div id="leader-review-panel" class="leader-review-panel" style="display: none; flex-direction: column; gap: 1rem;">
+        <!-- Top Controls: Pitch Count & Status Filter -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.75rem;">
+          <div style="font-size: 0.85rem; color: var(--text-dim, #a1a1aa);">
+            Incoming Applications: <strong id="applications-count-badge" style="color: #fff; font-family: var(--font-mono, monospace);">0</strong>
+          </div>
+          <select id="review-status-filter" class="pitch-select" style="width: auto; padding: 0.35rem 0.65rem; font-size: 0.8rem;">
+            <option value="pending" selected>Pending</option>
+            <option value="accepted">Accepted</option>
+            <option value="rejected">Rejected</option>
+            <option value="">All Applications</option>
+          </select>
+        </div>
+
+        <!-- Scrollable Cards Stream -->
+        <div id="applications-list" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 380px; overflow-y: auto; padding-right: 4px;">
+          <!-- Pitch dossiers will be rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CREATE SQUAD MODAL -->
+  <div id="create-squad-modal" class="modal-backdrop">
+    <div class="auth-card create-squad-card">
+      <button id="create-modal-close" class="modal-close-btn">&times;</button>
+      <span class="auth-badge">// INITIALIZE SQUAD ARCHITECTURE</span>
+      <h3 class="auth-title">Deploy New Squad</h3>
+      <p class="auth-desc">Broadcast your hackathon mission, outline stack dependencies, and configure vacant roles.</p>
+
+      <form id="create-squad-form" class="pitch-form">
+        <div class="form-grid-2">
+          <div class="pitch-field-group">
+            <label class="pitch-label" for="squad-title-input">Squad Call-Sign</label>
+            <input type="text" id="squad-title-input" class="pitch-input" placeholder="e.g., Autonomous Agent Swarm" required />
+          </div>
+
+          <div class="pitch-field-group">
+            <label class="pitch-label" for="hackathon-name-input">Target Hackathon</label>
+            <input type="text" id="hackathon-name-input" class="pitch-input" placeholder="e.g., ETHIndia 2026" required />
+          </div>
+        </div>
+
+        <div class="pitch-field-group">
+          <label class="pitch-label" for="squad-pitch-input">Mission / Problem Statement</label>
+          <textarea id="squad-pitch-input" class="pitch-textarea" placeholder="Describe the core technical challenge and what your squad will build..." required></textarea>
+        </div>
+
+        <div class="pitch-field-group">
+          <label class="pitch-label" for="squad-tech-input">Tech Stack (comma-separated)</label>
+          <input type="text" id="squad-tech-input" class="pitch-input" placeholder="FastAPI, PostgreSQL, Docker, PyTorch" required />
+        </div>
+
+        <div class="pitch-field-group">
+          <div class="roles-builder-header">
+            <label class="pitch-label">Vacant Engineering Roles</label>
+            <button type="button" id="btn-add-role-row" class="btn-add-role">+ Add Role Slot</button>
+          </div>
+          <div id="roles-container">
+            <!-- Dynamic rows injected here -->
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-crimson" style="width: 100%; justify-content: center; padding: 0.8rem; margin-top: 0.5rem;">
+          Broadcast Squad to Discovery Feed
+        </button>
+      </form>
+    </div>
+  </div>
+
+<!-- 1. My Applications Modal (Applicant Dashboard) -->
+<div id="my-applications-modal" class="modal-backdrop" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+">
+  <div style="
+    background: #121214;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 620px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  ">
+    <!-- Header -->
+    <div style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle at top left, rgba(229, 9, 20, 0.12), transparent 70%);
+    ">
+      <div>
+        <h3 style="
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #fff;
+          margin: 0;
+          letter-spacing: -0.02em;
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+        ">
+          <span>Submitted //</span>
+          <span class="hackathon-wave" style="
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+          ">PITCHES</span>
+        </h3>
+        <p style="font-size: 0.72rem; color: #71717a; margin: 3px 0 0 0; font-family: monospace; letter-spacing: 0.04em;">
+          TRACK APPLICATION LIFECYCLE
+        </p>
+      </div>
+      <button id="close-my-applications-btn" type="button" style="
+        background: transparent;
+        border: none;
+        color: #71717a;
+        font-size: 1.4rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.15s ease;
+      " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">&times;</button>
+    </div>
+
+    <!-- Scrollable Application List -->
+    <div id="my-applications-list" style="
+      padding: 1.25rem 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 160px;
+    ">
+      <div style="text-align: center; color: #71717a; font-size: 0.82rem; padding: 2rem 0;">
+        Loading your applications...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. My Squads Modal (Squad Leader Management) -->
+<div id="my-squads-modal" class="modal-backdrop" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+">
+  <div style="
+    background: #121214;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 680px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  ">
+    <!-- Header -->
+    <div style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle at top left, rgba(229, 9, 20, 0.12), transparent 70%);
+    ">
+      <div>
+        <h3 style="
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #fff;
+          margin: 0;
+          letter-spacing: -0.02em;
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+        ">
+          <span>Command Center //</span>
+          <span class="hackathon-wave" style="
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+          ">SQUADS</span>
+        </h3>
+        <p style="font-size: 0.72rem; color: #71717a; margin: 3px 0 0 0; font-family: monospace; letter-spacing: 0.04em;">
+          MANAGE SQUADS & ACTIVE RECRUITMENT
+        </p>
+      </div>
+      <button id="close-my-squads-btn" type="button" style="
+        background: transparent;
+        border: none;
+        color: #71717a;
+        font-size: 1.4rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.15s ease;
+      " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">&times;</button>
+    </div>
+
+    <!-- Scrollable Squad List -->
+    <div id="my-squads-list" style="
+      padding: 1.25rem 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 180px;
+    ">
+      <div style="text-align: center; color: #71717a; font-size: 0.85rem; padding: 2rem 0;">
+        Loading your squads...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Review Pitches Modal (Squad Leader Command) -->
+<div id="review-pitches-modal" class="modal-backdrop" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+">
+  <div style="
+    background: #121214;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 680px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  ">
+    <!-- Header -->
+    <div style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle at top left, rgba(229, 9, 20, 0.12), transparent 70%);
+    ">
+      <div>
+        <h3 style="
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #fff;
+          margin: 0;
+          letter-spacing: -0.02em;
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+        ">
+          <span id="review-squad-title">Squad //</span>
+          <span class="hackathon-wave" style="
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+          ">APPLICANTS</span>
+        </h3>
+        <p style="font-size: 0.72rem; color: #71717a; margin: 3px 0 0 0; font-family: monospace; letter-spacing: 0.04em;">
+          EVALUATE CANDIDATE DOSSIERS & ACCEPT/REJECT ROLES
+        </p>
+      </div>
+      <button id="close-review-pitches-btn" type="button" style="
+        background: transparent;
+        border: none;
+        color: #71717a;
+        font-size: 1.4rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.15s ease;
+      " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">&times;</button>
+    </div>
+
+    <!-- Applicant List Container -->
+    <div id="review-pitches-list" style="
+      padding: 1.25rem 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 200px;
+    ">
+      <div style="text-align: center; color: #71717a; font-size: 0.85rem; padding: 2rem 0;">
+        Loading applicants...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Portfolio Dossier Modal -->
+<div id="portfolio-dossier-modal" class="modal-backdrop" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+">
+  <div style="
+    background: #121214;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 620px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  ">
+  <!-- Header -->
+    <div style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle at top left, rgba(229, 9, 20, 0.12), transparent 70%);
+    ">
+      <div>
+        <h3 style="
+          font-size: 1.15rem; 
+          font-weight: 800; 
+          color: #fff; 
+          margin: 0;
+          letter-spacing: -0.02em;
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+        ">
+          <span>Candidate Dossier //</span>
+          <span class="hackathon-wave" style="
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+          ">PROFILE</span>
+        </h3>
+        <p style="font-size: 0.72rem; color: #71717a; margin: 3px 0 0 0; font-family: monospace; letter-spacing: 0.04em;">
+          EDIT TECHNICAL ATTRIBUTES & LINKS
+        </p>
+      </div>
+      <button id="close-portfolio-modal-btn" type="button" style="
+        background: transparent;
+        border: none;
+        color: #71717a;
+        font-size: 1.4rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.15s ease;
+      " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#71717a'">&times;</button>
+    </div>
+
+    <!-- Form Container -->
+    <form id="portfolio-dossier-form" style="
+      padding: 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin: 0;
+    ">
+      <!-- Row 1: Display Name & Contact Handle -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+          <label for="dossier-display-name" style="font-size: 0.75rem; font-family: monospace; color: #a1a1aa; text-transform: uppercase;">Display Name</label>
+          <input id="dossier-display-name" type="text" placeholder="e.g. Alex Chen" style="
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+          " required />
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+          <label for="dossier-contact-handle" style="font-size: 0.75rem; font-family: monospace; color: #a1a1aa; text-transform: uppercase;">Contact Handle</label>
+          <input id="dossier-contact-handle" type="text" placeholder="e.g. @alexchen:discord / telegram" style="
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+          " />
+        </div>
+      </div>
+
+      <!-- Row 2: Bio -->
+      <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+        <label for="dossier-bio" style="font-size: 0.75rem; font-family: monospace; color: #a1a1aa; text-transform: uppercase;">Bio</label>
+        <textarea id="dossier-bio" rows="3" placeholder="Full-stack builder passionate about AI tooling..." style="
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 6px;
+          padding: 0.6rem 0.8rem;
+          color: #fff;
+          font-size: 0.85rem;
+          outline: none;
+          resize: vertical;
+        "></textarea>
+      </div>
+
+      <!-- Row 3: Primary Skills (Comma-separated) -->
+      <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+        <label for="dossier-skills" style="font-size: 0.75rem; font-family: monospace; color: #a1a1aa; text-transform: uppercase;">Primary Skills (Comma separated)</label>
+        <input id="dossier-skills" type="text" placeholder="Python, FastAPI, React" style="
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 6px;
+          padding: 0.6rem 0.8rem;
+          color: #fff;
+          font-size: 0.85rem;
+          outline: none;
+        " />
+      </div>
+
+      <!-- Row 4: Links Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+          <label for="dossier-github" style="font-size: 0.75rem; font-family: monospace; color: #a1a1aa; text-transform: uppercase;">GitHub URL</label>
+          <input id="dossier-github" type="url" placeholder="https://github.com/alexchen" style="
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+          " />
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+          <label for="dossier-portfolio" style="font-size: 0.75rem; font-family: monospace; color: #a1a1aa; text-transform: uppercase;">Portfolio URL</label>
+          <input id="dossier-portfolio" type="url" placeholder="https://alexchen.dev" style="
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+          " />
+        </div>
+      </div>
+
+      <!-- Separator / Section Divider -->
+      <div style="
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0.5rem 0 0.25rem 0;
+        padding-top: 1rem;
+        border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      ">
+        <span style="font-family: monospace; font-size: 0.8rem; font-weight: 700; color: #fff; letter-spacing: 0.05em;">
+          VERIFIED BADGES & ACHIEVEMENTS
+        </span>
+      </div>
+
+      <!-- Current Achievements List Container -->
+      <div id="dossier-achievements-list" style="
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        max-height: 180px;
+        overflow-y: auto;
+      ">
+        <div style="font-size: 0.75rem; color: #71717a; font-family: monospace;">No achievements registered yet.</div>
+      </div>
+
+      <!-- Add Achievement Collapsible / Sub-form -->
+      <div style="
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 8px;
+        padding: 0.9rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      ">
+        <div style="font-size: 0.75rem; font-family: monospace; color: #a1a1aa; font-weight: 600;">
+          + REGISTER NEW ACHIEVEMENT
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+          <input id="achievement-title" type="text" placeholder="Title (e.g. 1st Place ETHGlobal)" style="
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 0.5rem 0.7rem;
+            color: #fff;
+            font-size: 0.8rem;
+            outline: none;
+          " />
+          <input id="achievement-project-url" type="url" placeholder="Project / Demo URL" style="
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 0.5rem 0.7rem;
+            color: #fff;
+            font-size: 0.8rem;
+            outline: none;
+          " />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.6rem;">
+          <input id="achievement-desc" type="text" placeholder="Description / Summary of win" style="
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 0.5rem 0.7rem;
+            color: #fff;
+            font-size: 0.8rem;
+            outline: none;
+          " />
+          <input id="achievement-image-url" type="url" placeholder="Badge / Image URL" style="
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 0.5rem 0.7rem;
+            color: #fff;
+            font-size: 0.8rem;
+            outline: none;
+          " />
+        </div>
+
+        <div style="display: flex; justify-content: flex-end;">
+          <button id="btn-add-achievement" type="button" style="
+            background: rgba(229, 9, 20, 0.15);
+            border: 1px solid rgba(229, 9, 20, 0.35);
+            color: #ff4d5a;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+          ">+ Add Badge</button>
+        </div>
+      </div>
+      
+      <!-- Action Footer -->
+      <div style="
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      ">
+        <span id="dossier-status-msg" style="font-size: 0.75rem; color: #71717a; font-family: monospace;"></span>
+        <button id="save-dossier-btn" type="submit" style="
+          background: #4f46e5;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          padding: 0.6rem 1.25rem;
+          font-weight: 600;
+          font-size: 0.82rem;
+          cursor: pointer;
+        ">Commit Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- SQUAD ROSTER INSPECTION MODAL -->
+<div id="roster-modal" style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1rem;">
+  <div style="position: relative; width: 100%; max-width: 680px; background: #09090b; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; padding: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); color: #f4f4f5;">
+    
+    <!-- Top Bar: Title, Hackathon & Slot Badge -->
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+      <div>
+        <span id="roster-squad-hackathon" style="font-family: monospace; font-size: 0.7rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em;"></span>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.25rem;">
+          <!-- >>> CLASS ADDED HERE <<< -->
+          <h3 id="roster-squad-title" class="hackathon-wave" style="font-size: 1.2rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; margin: 0;"></h3>
+          <span id="roster-slot-badge" style="font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-family: monospace; background: rgba(127, 29, 29, 0.35); border: 1px solid rgba(185, 28, 28, 0.7); color: #f87171;"></span>
+        </div>
+        <p id="roster-squad-pitch" style="font-size: 0.82rem; color: #a1a1aa; margin-top: 0.5rem; line-height: 1.4;"></p>
+        <div id="roster-squad-tech" style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.6rem;"></div>
+      </div>
+      <button id="close-roster-modal-btn" style="background: transparent; border: none; color: #71717a; font-size: 1.4rem; cursor: pointer; padding: 0.2rem 0.5rem; line-height: 1;">✕</button>
+    </div>
+
+    <!-- Section Heading -->
+    <div style="font-family: monospace; font-size: 0.68rem; color: #71717a; text-transform: uppercase; margin-bottom: 0.6rem; letter-spacing: 0.05em;">
+      // OPERATIVES &amp; OPEN STATIONS
+    </div>
+
+    <!-- Dynamic Operatives & Vacancies Container -->
+    <div id="roster-members-list" style="display: flex; flex-direction: column; gap: 0.65rem; max-height: 48vh; overflow-y: auto; padding-right: 0.35rem;">
+      <div style="text-align: center; padding: 2.5rem 0; color: #71717a; font-family: monospace; font-size: 0.8rem;">
+        // ESTABLISHING UPLINK TO ROSTER TELEMETRY...
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div style="margin-top: 1.25rem; padding-top: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; justify-content: flex-end;">
+      <button id="roster-dismiss-btn" style="padding: 0.45rem 1rem; font-size: 0.75rem; font-family: monospace; text-transform: uppercase; letter-spacing: 0.05em; color: #a1a1aa; background: #18181b; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; cursor: pointer;">
+        Close Terminal
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- PUBLIC OPERATIVE DOSSIER MODAL -->
+<div id="public-dossier-modal" style="display: none; position: fixed; inset: 0; z-index: 10001; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 1rem;">
+  <div style="position: relative; width: 100%; max-width: 520px; background: #09090b; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; padding: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); color: #f4f4f5;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: monospace; font-size: 0.68rem; color: #818cf8; text-transform: uppercase;">OPERATIVE DOSSIER //</span>
+        <h3 id="dossier-public-name" class="hackathon-wave" style="font-size: 1.25rem; font-weight: 700; margin: 0.2rem 0 0 0;"></h3>
+      </div>
+      <button onclick="document.getElementById('public-dossier-modal').style.display = 'none'" style="background: transparent; border: none; color: #71717a; font-size: 1.3rem; cursor: pointer; line-height: 1;">✕</button>
+    </div>
+
+    <p id="dossier-public-bio" style="font-size: 0.82rem; color: #a1a1aa; line-height: 1.4; margin: 1rem 0;"></p>
+
+    <div style="margin-bottom: 1rem;">
+      <div style="font-family: monospace; font-size: 0.7rem; color: #71717a; margin-bottom: 0.4rem;">PRIMARY DISCIPLINES:</div>
+      <div id="dossier-public-skills" style="display: flex; flex-wrap: wrap; gap: 0.35rem;"></div>
+    </div>
+
+    <div style="margin-bottom: 1.25rem;">
+      <div style="font-family: monospace; font-size: 0.7rem; color: #71717a; margin-bottom: 0.4rem;">ACHIEVEMENTS:</div>
+      <div id="dossier-public-badges" style="display: flex; flex-direction: column; gap: 0.4rem;"></div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 0.85rem;">
+      <a id="dossier-public-github" target="_blank" rel="noopener noreferrer" style="font-family: monospace; font-size: 0.75rem; color: #818cf8; text-decoration: none;">GitHub ↗</a>
+      <a id="dossier-public-portfolio" target="_blank" rel="noopener noreferrer" style="font-family: monospace; font-size: 0.75rem; color: #818cf8; text-decoration: none;">Portfolio ↗</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Edit Squad Modal -->
+<div id="edit-squad-modal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 100000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+">
+  <div style="
+    background: #121215;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 520px;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+  ">
+    <!-- Header with Hackathon Wave Effect -->
+    <div style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.15), transparent 70%);
+    ">
+      <div>
+        <h3 style="
+          font-size: 1.15rem; 
+          font-weight: 800; 
+          color: #fff; 
+          margin: 0;
+          letter-spacing: -0.02em;
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+        ">
+          <span>Squad Configuration //</span>
+          <span id="edit-squad-hackathon-wave" class="hackathon-wave" style="
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+          ">PARAMETERS</span>
+        </h3>
+        <p style="font-size: 0.72rem; color: #71717a; margin: 3px 0 0 0; font-family: monospace; letter-spacing: 0.04em;">
+          EDIT SQUAD METADATA & RECRUITMENT SPECIFICATIONS
+        </p>
+      </div>
+
+      <button 
+        type="button" 
+        id="btn-close-edit-squad-modal" 
+        style="
+          background: transparent; 
+          border: none; 
+          color: #71717a; 
+          font-size: 1.25rem; 
+          cursor: pointer; 
+          padding: 0.2rem 0.5rem; 
+          line-height: 1;
+        ">
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem;">
+      <!-- Hidden Squad ID -->
+      <input type="hidden" id="edit-squad-id" />
+
+      <!-- Form Fields -->
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <div>
+          <label style="font-size: 0.75rem; color: #a1a1aa; font-family: monospace; display: block; margin-bottom: 0.35rem;">
+            SQUAD NAME
+          </label>
+          <input 
+            type="text" 
+            id="edit-squad-name" 
+            style="width: 100%; background: #18181b; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 4px; padding: 0.5rem 0.75rem; color: #f4f4f5; font-size: 0.85rem; outline: none; box-sizing: border-box;" 
+          />
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; color: #a1a1aa; font-family: monospace; display: block; margin-bottom: 0.35rem;">
+            TARGET HACKATHON
+          </label>
+          <input 
+            type="text" 
+            id="edit-squad-hackathon" 
+            style="width: 100%; background: #18181b; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 4px; padding: 0.5rem 0.75rem; color: #f4f4f5; font-size: 0.85rem; outline: none; box-sizing: border-box;" 
+          />
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; color: #a1a1aa; font-family: monospace; display: block; margin-bottom: 0.35rem;">
+            MISSION BRIEF / PITCH
+          </label>
+          <textarea 
+            id="edit-squad-pitch" 
+            rows="3" 
+            style="width: 100%; background: #18181b; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 4px; padding: 0.5rem 0.75rem; color: #f4f4f5; font-size: 0.85rem; outline: none; resize: vertical; box-sizing: border-box;"></textarea>
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; color: #a1a1aa; font-family: monospace; display: block; margin-bottom: 0.35rem;">
+            TECH STACK (COMMA-SEPARATED)
+          </label>
+          <input 
+            type="text" 
+            id="edit-squad-tech" 
+            placeholder="FastAPI, React, PostgreSQL" 
+            style="width: 100%; background: #18181b; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 4px; padding: 0.5rem 0.75rem; color: #f4f4f5; font-size: 0.85rem; outline: none; box-sizing: border-box;" 
+          />
+        </div>
+      </div>
+
+      <!-- Danger Zone: Disband Squad -->
+      <div style="
+        margin-top: 0.3rem;
+        padding: 0.85rem 1rem;
+        background: rgba(239, 68, 68, 0.05);
+        border: 1px dashed rgba(239, 68, 68, 0.25);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+      ">
+        <div>
+          <div style="font-family: monospace; font-size: 0.75rem; font-weight: 700; color: #f87171; letter-spacing: 0.04em;">
+            DANGER ZONE // DISBAND SQUAD
+          </div>
+          <div style="font-size: 0.7rem; color: #71717a; margin-top: 2px;">
+            Permanently delete this squad and release all members.
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          id="btn-delete-squad"
+          style="
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #f87171;
+            font-size: 0.72rem;
+            font-family: monospace;
+            font-weight: 600;
+            padding: 0.45rem 0.85rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+          "
+          onmouseover="this.style.background='rgba(239, 68, 68, 0.25)'; this.style.borderColor='rgba(239, 68, 68, 0.7)'; this.style.boxShadow='0 0 12px rgba(239, 68, 68, 0.35)';"
+          onmouseout="this.style.background='rgba(239, 68, 68, 0.12)'; this.style.borderColor='rgba(239, 68, 68, 0.35)'; this.style.boxShadow='none';"
+        >
+          <span>⚠ DISBAND SQUAD</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Actions with Cyberpunk / High-Contrast Styling -->
+    <div style="
+      display: flex; 
+      justify-content: flex-end; 
+      align-items: center;
+      gap: 0.75rem; 
+      border-top: 1px solid rgba(255, 255, 255, 0.08); 
+      padding: 1rem 1.5rem;
+      background: rgba(18, 18, 21, 0.6);
+    ">
+      <!-- Cancel Button (Red Tactical Hover) -->
+      <button 
+        type="button" 
+        id="btn-cancel-edit-squad"
+        style="
+          background: rgba(24, 24, 27, 0.85); 
+          border: 1px solid rgba(239, 68, 68, 0.25); 
+          color: #a1a1aa; 
+          font-size: 0.75rem; 
+          font-family: monospace; 
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          padding: 0.55rem 1.1rem; 
+          border-radius: 5px; 
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        "
+        onmouseover="
+          this.style.background='rgba(239, 68, 68, 0.12)'; 
+          this.style.borderColor='rgba(239, 68, 68, 0.6)'; 
+          this.style.color='#fca5a5';
+          this.style.boxShadow='0 0 14px rgba(239, 68, 68, 0.35)';
+          this.style.transform='translateY(-1px)';
+        "
+        onmouseout="
+          this.style.background='rgba(24, 24, 27, 0.85)'; 
+          this.style.borderColor='rgba(239, 68, 68, 0.25)'; 
+          this.style.color='#a1a1aa';
+          this.style.boxShadow='none';
+          this.style.transform='translateY(0)';
+        "
+      >
+        <span style="color: #ef4444; font-size: 0.85rem; line-height: 1;">✕</span>
+        <span>CANCEL</span>
+      </button>
+
+      <!-- Save Changes Button -->
+      <button 
+        type="button" 
+        id="btn-save-edit-squad" 
+        style="
+          background: linear-gradient(135deg, #2563eb, #1d4ed8); 
+          border: 1px solid rgba(96, 165, 250, 0.5); 
+          color: #ffffff; 
+          font-size: 0.75rem; 
+          font-family: monospace; 
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          padding: 0.55rem 1.3rem; 
+          border-radius: 5px; 
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          box-shadow: 0 0 15px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        "
+        onmouseover="
+          this.style.background='linear-gradient(135deg, #3b82f6, #2563eb)';
+          this.style.boxShadow='0 0 22px rgba(59, 130, 246, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3)';
+          this.style.transform='translateY(-1px)';
+        "
+        onmouseout="
+          this.style.background='linear-gradient(135deg, #2563eb, #1d4ed8)';
+          this.style.boxShadow='0 0 15px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+          this.style.transform='translateY(0)';
+        "
+      >
+        <span>SAVE PARAMETERS</span>
+        <span style="font-size: 0.85rem; line-height: 1;">⚡</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+  <!-- Modular Scripts -->
+  <script src="js/loader.js"></script>
+  <script src="js/glow.js"></script>
+  <script type="module" src="js/modal.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

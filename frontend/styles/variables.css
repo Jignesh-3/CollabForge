@@ -1,0 +1,49 @@
+:root {
+  /* Surface & Canvas */
+  --bg-black: #050505;
+  --surface-dark: #0c0c0c;
+  --surface-card: rgba(14, 14, 14, 0.75);
+  --surface-card-hover: rgba(20, 20, 20, 0.9);
+  --surface-border: #1e1e1e;
+  --surface-border-subtle: #141414;
+
+  /* Crimson Brand Palette */
+  --crimson-red: #e50914;
+  --crimson-glow: rgba(229, 9, 20, 0.45);
+  --crimson-hover: #b80710;
+
+  /* Typography Scales & Colors */
+  --text-white: #f5f5f5;
+  --text-muted: #8a8a8a;
+  --text-dim: #4f4f4f;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Transitions & Curves */
+  --transition-base: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-black);
+  color: var(--text-white);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Clean semantic abbreviations */
+abbr[title] {
+  text-decoration: none !important;
+  cursor: inherit;
+}
