@@ -7,12 +7,12 @@ const API_BASE_URL = window.location.hostname === 'localhost' || window.location
   : 'https://collabforge-o7db.onrender.com/api';
 
 export const apiClient = {
-  // 1. Fetch Active Squads
+  // 1. Fetch Active Squads (Added trailing slash)
   async getSquads(vacantOnly = false) {
     try {
       const url = vacantOnly 
-        ? `${API_BASE_URL}/squads?vacant_only=true` 
-        : `${API_BASE_URL}/squads`;
+        ? `${API_BASE_URL}/squads/?vacant_only=true` 
+        : `${API_BASE_URL}/squads/`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to fetch squads`);
       return await res.json();
@@ -22,10 +22,10 @@ export const apiClient = {
     }
   },
 
-  // 2. Broadcast / Deploy New Squad
+  // 2. Broadcast / Deploy New Squad (Added trailing slash)
   async createSquad(squadPayload, authToken) {
     try {
-      const res = await fetch(`${API_BASE_URL}/squads`, {
+      const res = await fetch(`${API_BASE_URL}/squads/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export const apiClient = {
       console.error('[API Error - getMyApplications]:', err);
       throw err;
     }
-  }, // <-- Just a comma here to separate the methods
+  },
 
   // 8. Retrieve Squads Created by Current User
   async getMySquads(authToken) {
@@ -149,7 +149,7 @@ export const apiClient = {
     }
   },
 
-// 9. Fetch Profile / Dossier
+  // 9. Fetch Profile / Dossier
   async getProfile(authToken) {
     try {
       const res = await fetch(`${API_BASE_URL}/users/me`, {
@@ -185,7 +185,7 @@ export const apiClient = {
     }
   },
 
-  // Get current user's achievements
+  // 11. Get current user's achievements
   async getAchievements(userId, authToken) {
     try {
       const res = await fetch(`${API_BASE_URL}/users/${userId}/achievements`, {
@@ -199,7 +199,7 @@ export const apiClient = {
     }
   },
 
-  // Add new achievement
+  // 12. Add new achievement
   async addAchievement(authToken, payload) {
     try {
       const res = await fetch(`${API_BASE_URL}/users/me/achievements`, {
@@ -218,7 +218,7 @@ export const apiClient = {
     }
   },
 
-  // Delete achievement
+  // 13. Delete achievement
   async deleteAchievement(authToken, achievementId) {
     try {
       const res = await fetch(`${API_BASE_URL}/users/me/achievements/${achievementId}`, {
@@ -233,7 +233,7 @@ export const apiClient = {
     }
   },
 
-  // Public Operative Dossier Profile Fetch
+  // 14. Public Operative Dossier Profile Fetch
   async getUserProfile(userId) {
     try {
       const res = await fetch(`${API_BASE_URL}/users/${userId}`);
