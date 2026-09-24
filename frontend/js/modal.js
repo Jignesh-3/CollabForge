@@ -4,6 +4,7 @@
 
 // ==========================================
 
+import { apiClient } from './api.js';
 
 
 function closeRosterModal() {
@@ -88,18 +89,15 @@ window.openSquadRoster = async function openSquadRoster(squadId) {
 
   `;
 
-
-
   try {
 
-    const res = await fetch(`http://127.0.0.1:8000/api/squads/${squadId}/roster`);
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:8000/api'
+      : 'https://collabforge-o7db.onrender.com/api';
 
+    const res = await fetch(`${API_BASE_URL}/squads/${squadId}/roster`);
     if (!res.ok) throw new Error(`HTTP Error ${res.status}: ${res.statusText}`);
-
-
-
-    const data = await res.json();
-
+    const data = await res.json();    
 
 
     // 1. Populate Squad Header from real backend data
