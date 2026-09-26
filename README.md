@@ -65,7 +65,11 @@ Onboarding Telemetry: Built-in empty-state evaluator monitors user profile compl
 ├── requirements.txt      # Backend dependency manifest
 ├── .gitignore            # Secret & credential isolation rules
 └── README.md
-🚀 Local Development Setup1. PrerequisitesPython 3.10+Firebase project with Authentication & Storage enabled2. Backend InstallationBash# Clone the repository
+
+🚀 Local Development Setup
+
+1. Prerequisites Python 3.10+Firebase project with Authentication & Storage enabled
+2. Backend InstallationBash# Clone the repository
 git clone [https://github.com/](https://github.com/)<your-username>/CollabForge.git
 cd CollabForge
 
@@ -75,10 +79,13 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+
 3. Environment ConfigurationCreate a .env file in the project root:Code snippetFIREBASE_CREDENTIALS_PATH=firebase_credentials.json
 FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
 SECRET_KEY=your_development_secret_key
-Ensure your firebase_credentials.json service account file is placed in the root directory (enforced via .gitignore).4. Run ApplicationBash# Start API server
+Ensure your firebase_credentials.json service account file is placed in the root directory (enforced via .gitignore).
+
+4. Run ApplicationBash# Start API server
 uvicorn app.main:app --reload --port 8000
 
 # In a new terminal, serve the frontend
