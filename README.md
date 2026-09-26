@@ -70,7 +70,7 @@ Onboarding Telemetry: Built-in empty-state evaluator monitors user profile compl
 
 1. Prerequisites Python 3.10+Firebase project with Authentication & Storage enabled
 2. Backend InstallationBash# Clone the repository
-git clone [https://github.com/](https://github.com/)<your-username>/CollabForge.git
+git clone [https://github.com/](https://github.com/)<Jignesh-3>/CollabForge.git
 cd CollabForge
 
 # Set up virtual environment
